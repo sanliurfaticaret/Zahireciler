@@ -319,14 +319,6 @@
   }
   .btn-cancel:hover { color: var(--text); }
 
-  /* SECTION LABEL */
-  .section-label {
-    font-size: 11px; font-weight: 600;
-    color: var(--text2); text-transform: uppercase;
-    letter-spacing: 0.8px; margin-bottom: 10px;
-    margin-top: 4px;
-  }
-
   /* ===== BORSA SEKMESİ ===== */
   #page-borsa .main { padding: 16px; max-width: 960px; margin: 0 auto; }
   .borsa-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px; }
@@ -365,8 +357,6 @@
   .borsa-price-box .val { font-size:15px;font-weight:700;margin-top:2px; }
   .borsa-price-box .val.usd { color:var(--blue); }
   .borsa-price-box .val.try { color:var(--gold); }
-  .borsa-price-box .val.loading { color:var(--text2);font-size:13px;animation:bpulse 1.5s ease-in-out infinite; }
-  @keyframes bpulse { 0%,100%{opacity:1}50%{opacity:0.4} }
   .borsa-error { text-align:center;padding:24px;background:var(--surface);border:1px solid var(--red);border-radius:var(--radius);color:var(--red);font-size:13px;margin-bottom:16px; }
   .borsa-update-label { font-size:11px;color:var(--text2); }
   @media(max-width:600px) { .borsa-grid{grid-template-columns:1fr 1fr} }
@@ -400,6 +390,82 @@
 
   .page { display: none; }
   .page.active { display: block; }
+
+  @media (max-width: 600px) {
+    .summary { grid-template-columns: 1fr 1fr 1fr; }
+    .sum-card .amount { font-size: 13px; }
+    .field-row { grid-template-columns: 1fr; }
+    .header { padding: 14px 12px 0; }
+    .main { padding: 14px 10px; }
+  }
+
+  /* LOGIN */
+  #loginScreen {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  #loginScreen.hidden { display: none; }
+  .login-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px 28px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+  }
+  .login-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .login-sub {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 32px;
+  }
+  .login-box .field { text-align: left; margin-bottom: 16px; }
+  .login-error {
+    color: var(--red);
+    font-size: 13px;
+    margin-bottom: 12px;
+    min-height: 18px;
+  }
+  .btn-login {
+    width: 100%;
+    padding: 12px;
+    background: var(--gold);
+    color: #000;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 4px;
+  }
+  .btn-login:hover { opacity: 0.85; }
+  .logout-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text2);
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .logout-btn:hover { color: var(--red); border-color: var(--red); }
+  #appContent { display: none; }
+  #appContent.visible { display: block; }
 </style>
 </head>
 <body>
@@ -458,9 +524,7 @@
 <div class="nav-tabs" id="mainNavTabs">
   <div class="nav-tab active" onclick="switchPage('defter',this)">📒 HASAT DEFTER</div>
   <div class="nav-tab" onclick="switchPage('ozet',this)">📋 Ödemeler</div>
-  <div id="depo-nav-tabs" style="display:contents;"></div>
   <div class="nav-tab" onclick="switchPage('borsa',this)">🌍 Borsa</div>
-  <div class="nav-tab" onclick="openAddDepo()" style="color:var(--gold);font-size:18px;padding:10px 14px;flex-shrink:0;" title="Yeni Depo Ekle">＋</div>
   <div class="nav-tab" id="adminNavTab" onclick="switchPage('admin',this)" style="display:none;color:var(--gold);font-weight:700;">⚙️ Yönetim</div>
 </div>
 
@@ -504,7 +568,7 @@
 </div>
 </div>
 
-<!-- SAYFA: ÖDEMELER & ALACAKLAR -->
+<!-- SAYFA: ÖDEMELER -->
 <div id="page-ozet" class="page">
   <div class="main">
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
@@ -519,9 +583,6 @@
     <div id="ozet-list"></div>
   </div>
 </div>
-
-<!-- DEPO SAYFALARI -->
-<div id="depo-pages-container"></div>
 
 <!-- SAYFA: DÜNYA BORSASI -->
 <div id="page-borsa" class="page">
@@ -560,7 +621,7 @@
   </div>
 </div>
 
-<!-- SAYFA: YÖNETİM (Sadece Admin) -->
+<!-- SAYFA: YÖNETİM -->
 <div id="page-admin" class="page">
   <div class="main">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
@@ -574,7 +635,7 @@
   </div>
 </div>
 
-<!-- ADD PERSON MODAL -->
+<!-- MODALS -->
 <div class="modal-overlay" id="addPersonModal">
   <div class="modal">
     <div class="modal-title">Yeni Kişi Ekle</div>
@@ -584,14 +645,10 @@
     </div>
     <div class="field">
       <label>Kategori *</label>
-      <select id="pCategory" onchange="toggleKoyField()">
+      <select id="pCategory">
         <option value="ciftci">🌾 Çiftçi</option>
         <option value="esnaf">🏪 Esnaf</option>
       </select>
-    </div>
-    <div class="field" id="koyFieldWrap">
-      <label>Köy / İlçe</label>
-      <input type="text" id="pKoy" placeholder="Köy veya ilçe adı">
     </div>
     <div class="field">
       <label>Telefon (İsteğe Bağlı)</label>
@@ -604,7 +661,6 @@
   </div>
 </div>
 
-<!-- ADD TRANSACTION MODAL -->
 <div class="modal-overlay" id="addTxModal">
   <div class="modal">
     <div class="modal-title" id="txModalTitle">Yeni Kayıt</div>
@@ -644,7 +700,6 @@
   </div>
 </div>
 
-<!-- ADD USER MODAL -->
 <div class="modal-overlay" id="addUserModal">
   <div class="modal">
     <div class="modal-title">👤 Yeni Kullanıcı Ekle</div>
@@ -670,7 +725,7 @@
 </div>
 
 <!-- ALT BANNER -->
-<div style="position:fixed;bottom:0;left:0;right:0;z-index:9998;background:linear-gradient(90deg,#1a1200,#2a1e00,#1a1200);border-top:1px solid var(--gold);padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:12px;">
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9998;background:linear-gradient(90deg,#1a1200,#2a1e00,#1a1200);border-top:1px solid var(--gold);padding:8px 16px;display:flex;align-items:center;justify-content:center;text-align:center;">
   <span style="font-size:13px;color:var(--gold);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;font-family:'Playfair Display',serif;">🌾 ŞANLIURFA TİCARET BORSASI 🌾</span>
 </div>
 
@@ -699,7 +754,7 @@ let currentUsername = null;
 let isAdmin = false;
 let userDataRef = null;
 let knownUsers = {};
-let state = { people: [], transactions: [], depolar: {} };
+let state = { people: [], transactions: [] };
 let currentPersonId = null;
 let currentTab = 'hepsi';
 let isListening = false;
@@ -770,11 +825,10 @@ function startListening() {
     if (data) {
       state = {
         people: Array.isArray(data.people) ? data.people : [],
-        transactions: Array.isArray(data.transactions) ? data.transactions : [],
-        depolar: data.depolar || {}
+        transactions: Array.isArray(data.transactions) ? data.transactions : []
       };
     } else {
-      state = { people: [], transactions: [], depolar: {} };
+      state = { people: [], transactions: [] };
     }
     updateSummary();
     renderPeople();
@@ -791,7 +845,6 @@ async function borsaFetch() {
   document.getElementById('borsa-error-box').style.display = 'none';
   
   try {
-    // Sabit demo veri - gerçek API yerine
     const borsaData = [
       { icon: '🌾', name: 'Buğday', usd: 380, try: 6800 },
       { icon: '🌽', name: 'Mısır', usd: 450, try: 8100 },
@@ -884,7 +937,6 @@ let ozetCurrentFilter = 'hepsi';
 
 window.ozetFilter = function(filter, el) {
   ozetCurrentFilter = filter;
-  document.querySelectorAll('.btn-primary').forEach(b => b.style.background = '');
   renderOzet();
 }
 
@@ -924,16 +976,7 @@ function renderOzet() {
     const sign = t.type === 'alacak' ? '+' : '-';
 
     html += `
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:7px;display:flex;align-items:flex-start;gap:10px;border-left:3px solid ${t.type==='alacak'?'var(--green)':'var(--red)'};opacity:${t.done?'0.45':'1'};">
-      <div style="font-size:20px;flex-shrink:0;">${icon}</div>
-      <div style="flex:1;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
-          <div style="font-weight:700;font-size:14px;">${pName} <span style="font-size:11px;color:var(--text2);font-weight:400;margin-left:5px;">${pCat}</span></div>
-          <div style="font-weight:800;font-size:15px;color:${t.type==='alacak'?'var(--green)':'var(--red)'};">${sign}${fmt(t.amount)}</div>
-        </div>
-        <div style="font-size:11px;color:var(--text2);margin-top:5px;">📅 Vade: ${fmtDate(t.due)}</div>
-      </div>
-    </div>`;
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:7px;display:flex;align-items:flex-start;gap:10px;border-left:3px solid ${t.type==='alacak'?'var(--green)':'var(--red)'};"><div style="font-size:20px;flex-shrink:0;">${icon}</div><div style="flex:1;"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;"><div style="font-weight:700;font-size:14px;">${pName} <span style="font-size:11px;color:var(--text2);font-weight:400;margin-left:5px;">${pCat}</span></div><div style="font-weight:800;font-size:15px;color:${t.type==='alacak'?'var(--green)':'var(--red)'};">${sign}${fmt(t.amount)}</div></div><div style="font-size:11px;color:var(--text2);margin-top:5px;">📅 Vade: ${fmtDate(t.due)}</div></div></div>`;
   });
 
   list.innerHTML = html;
@@ -972,16 +1015,15 @@ function renderPersonCard(p) {
     if (t.type === 'alacak') alacak += Number(t.amount);
     else borc += Number(t.amount);
   });
-  const expanded = document.querySelector(`[data-pid="${p.id}"]`)?.classList.contains('expanded') ? 'expanded' : '';
 
   return `
-  <div class="person-card ${expanded}" data-pid="${p.id}" onclick="togglePerson(event,'${p.id}')">
+  <div class="person-card" data-pid="${p.id}" onclick="togglePerson(event,'${p.id}')">
     <div class="person-header">
       <div class="person-info">
         ${catAvatar(p.category, p.name)}
         <div>
           <div class="person-name">${p.name}</div>
-          <div class="person-sub">${catLabel(p.category)}${p.koy ? ' · 📍' + p.koy : ''}${p.phone ? ' · ' + p.phone : ''}</div>
+          <div class="person-sub">${catLabel(p.category)}${p.phone ? ' · ' + p.phone : ''}</div>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
@@ -998,338 +1040,240 @@ function renderPersonCard(p) {
       <div class="detail-actions">
         <button class="btn-add alacak" onclick="openAddTx('${p.id}','alacak')">+ Alacak</button>
         <button class="btn-add borc" onclick="openAddTx('${p.id}','borc')">+ Borç</button>
-        <button class="btn-add delete" onclick="deletePerson('${p.id}','${p.name.replace(/'/g,"\\'")}')">🗑 Sil</button>
+        <button class="btn-add delete" onclick="deletePerson('${p.id}')">🗑 Sil</button>
       </div>
-      ${renderTxList(p.id)}
+      <div class="tx-list">${txs.map((t,i) => renderTxItem(t, i)).join('')}</div>
     </div>
   </div>`;
 }
 
-function renderTxList(personId) {
-  const txs = state.transactions.filter(t => t.personId === personId);
-
-  if (!txs.length) return `<div class="empty" style="padding:20px"><p>Henüz kayıt eklenmedi.</p></div>`;
-
-  const activeTxs = txs.filter(t => !t.done).sort((a,b) => a.due.localeCompare(b.due));
-  const doneTxs = txs.filter(t => t.done).sort((a,b) => b.due.localeCompare(a.due));
-
-  let html = '';
-  if (activeTxs.length) {
-    html += `<div class="section-label">Aktif Kayıtlar</div>`;
-    html += `<div class="tx-list">${activeTxs.map(t => renderTx(t)).join('')}</div>`;
-  }
-  if (doneTxs.length) {
-    html += `<div class="section-label" style="margin-top:14px;">Tamamlananlar</div>`;
-    html += `<div class="tx-list">${doneTxs.map(t => renderTx(t)).join('')}</div>`;
-  }
-  return html;
-}
-
-function renderTx(t) {
+function renderTxItem(t, idx) {
   const due = dueLabel(t.due);
   return `
-  <div class="tx-item ${t.done ? 'done' : ''}">
-    <div class="tx-checkbox ${t.done ? 'checked' : ''}" onclick="toggleTx('${t.id}')"></div>
+  <div class="tx-item ${t.done?'done':''}">
+    <div class="tx-checkbox ${t.done?'checked':''}" onclick="toggleTx('${t.id}'); event.stopPropagation();"></div>
     <div class="tx-body">
       <div class="tx-top">
-        <div>
-          <div class="tx-amount ${t.type}">${t.type === 'alacak' ? '+' : '-'}${fmt(t.amount)}</div>
-          <div style="font-size:11px;color:var(--text2);margin-top:2px;">Vade: <span class="tx-due ${due.cls}">${fmtDate(t.due)} (${due.text})</span></div>
-        </div>
-        <div class="tx-badge ${t.type}">${t.type === 'alacak' ? 'Alacak' : 'Borç'}</div>
+        <div class="tx-amount ${t.type}">${t.type==='alacak'?'+':'-'}${fmt(t.amount)}</div>
+        <div class="tx-due ${due.cls}">${due.text}</div>
       </div>
-      ${t.cins ? `<div class="tx-meta"><span class="tx-tag">📦 ${t.cins}</span></div>` : ''}
-      ${t.note ? `<div class="tx-note">📝 ${t.note}</div>` : ''}
+      ${t.cins ? `<div class="tx-tag">${t.cins}</div>` : ''}
+      ${t.note ? `<div class="tx-note">${t.note}</div>` : ''}
     </div>
+    <div class="tx-badge ${t.type}">${t.type}</div>
   </div>`;
 }
 
-// ============================================================
-// ACTIONS
-// ============================================================
 window.togglePerson = function(e, id) {
-  if (e.target.closest('.detail-actions, .tx-checkbox, .btn-add')) return;
+  if (e.target.closest('.detail-actions, .tx-checkbox')) return;
   const card = document.querySelector(`[data-pid="${id}"]`);
   card.classList.toggle('expanded');
 }
 
-window.toggleTx = function(id) {
-  const tx = state.transactions.find(t => t.id === id);
-  if (!tx) return;
-  tx.done = !tx.done;
+window.toggleTx = function(txId) {
+  const tx = state.transactions.find(t => t.id === txId);
+  if (tx) {
+    tx.done = !tx.done;
+    saveToFirebase();
+  }
+}
+
+window.deletePerson = function(id) {
+  if (!confirm('Bu kişi silinecek. Emin misiniz?')) return;
+  state.people = state.people.filter(p => p.id !== id);
+  state.transactions = state.transactions.filter(t => t.personId !== id);
   saveToFirebase();
 }
 
+// ============================================================
+// MODALS
+// ============================================================
 window.openAddPerson = function() {
-  document.getElementById('pName').value = '';
-  document.getElementById('pPhone').value = '';
-  document.getElementById('pKoy').value = '';
-  document.getElementById('pCategory').value = 'ciftci';
-  document.getElementById('koyFieldWrap').style.display = 'block';
-  openModal('addPersonModal');
+  document.getElementById('addPersonModal').classList.add('open');
 }
 
-window.toggleKoyField = function() {
-  const cat = document.getElementById('pCategory').value;
-  document.getElementById('koyFieldWrap').style.display = cat === 'ciftci' ? 'block' : 'none';
+window.closeModal = function(id) {
+  document.getElementById(id).classList.remove('open');
 }
 
 window.addPerson = function() {
   const name = document.getElementById('pName').value.trim();
-  if (!name) { alert('Lütfen kişi adı girin.'); return; }
   const cat = document.getElementById('pCategory').value;
   const phone = document.getElementById('pPhone').value.trim();
-  const koy = cat === 'ciftci' ? document.getElementById('pKoy').value.trim() : '';
-  state.people.push({ id: uid(), name, category: cat, phone, koy, createdAt: new Date().toISOString() });
+  
+  if (!name) { alert('Adı girin'); return; }
+  
+  state.people.push({ id: uid(), name, category: cat, phone });
+  document.getElementById('pName').value = '';
+  document.getElementById('pPhone').value = '';
   saveToFirebase();
   closeModal('addPersonModal');
-}
-
-window.deletePerson = function(personId) {
-  if (!confirm('Bu kişiyi silmek istediğinize emin misiniz?')) return;
-  state.transactions = state.transactions.filter(t => t.personId !== personId);
-  state.people = state.people.filter(p => p.id !== personId);
-  saveToFirebase();
+  renderPeople();
 }
 
 window.openAddTx = function(personId, type) {
   currentPersonId = personId;
-  const p = state.people.find(x => x.id === personId);
-  document.getElementById('txModalTitle').textContent = `${p.name} — Yeni Kayıt`;
   document.getElementById('txType').value = type;
-  document.getElementById('txAmount').value = '';
-  document.getElementById('txNote').value = '';
-  document.getElementById('txCins').value = '';
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('txDate').value = today;
-  document.getElementById('txDue').value = today;
-  openModal('addTxModal');
+  document.getElementById('txModalTitle').textContent = type === 'alacak' ? 'Alacak Ekle' : 'Borç Ekle';
+  document.getElementById('addTxModal').classList.add('open');
 }
 
 window.addTransaction = function() {
-  const amount = parseFloat(document.getElementById('txAmount').value);
-  if (!amount || amount <= 0) { alert('Lütfen geçerli bir tutar girin.'); return; }
-  const due = document.getElementById('txDue').value;
-  const date = document.getElementById('txDate').value;
-  if (!due || !date) { alert('Lütfen tarih ve vade tarihi seçin.'); return; }
-
+  const type = document.getElementById('txType').value;
   const cins = document.getElementById('txCins').value.trim();
+  const amount = document.getElementById('txAmount').value;
+  const date = document.getElementById('txDate').value;
+  const due = document.getElementById('txDue').value;
   const note = document.getElementById('txNote').value.trim();
-
-  const tx = {
+  
+  if (!amount || !date || !due) { alert('Zorunlu alanları doldurun'); return; }
+  
+  state.transactions.push({
     id: uid(),
     personId: currentPersonId,
-    type: document.getElementById('txType').value,
-    amount,
+    type,
+    amount: Number(amount),
+    cins,
     date,
     due,
-    cins,
     note,
-    done: false,
-    createdAt: new Date().toISOString()
-  };
-  state.transactions.push(tx);
+    done: false
+  });
+  
+  document.getElementById('txCins').value = '';
+  document.getElementById('txAmount').value = '';
+  document.getElementById('txDate').value = '';
+  document.getElementById('txDue').value = '';
+  document.getElementById('txNote').value = '';
+  
   saveToFirebase();
   closeModal('addTxModal');
-  setTimeout(() => {
-    const card = document.querySelector(`[data-pid="${currentPersonId}"]`);
-    if (card) card.classList.add('expanded');
-  }, 300);
 }
 
-// ============================================================
-// MODAL
-// ============================================================
-window.openModal = function(id) { document.getElementById(id).classList.add('open'); }
-window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); }
-document.addEventListener('click', e => {
-  if (e.target.classList.contains('modal-overlay')) {
-    e.target.classList.remove('open');
+window.openAddUser = function() {
+  document.getElementById('addUserModal').classList.add('open');
+}
+
+window.saveAddUser = function() {
+  const ad = document.getElementById('auAd').value.trim();
+  const username = document.getElementById('auUsername').value.trim();
+  const pass = document.getElementById('auPass').value;
+  
+  if (!ad || !username || !pass || pass.length < 6) {
+    document.getElementById('auError').textContent = 'Lütfen tüm alanları doğru doldurun (şifre ≥6 char)';
+    return;
   }
-});
+  
+  const usersRef = ref(db, 'users/' + username);
+  set(usersRef, {
+    name: ad,
+    password: btoa(pass),
+    forceChangePass: true,
+    isAdmin: false
+  }).then(() => {
+    alert('Kullanıcı oluşturuldu!');
+    document.getElementById('auAd').value = '';
+    document.getElementById('auUsername').value = '';
+    document.getElementById('auPass').value = '';
+    document.getElementById('auError').textContent = '';
+    closeModal('addUserModal');
+  }).catch(e => {
+    document.getElementById('auError').textContent = 'Hata: ' + e.message;
+  });
+}
 
 // ============================================================
 // AUTH
 // ============================================================
-const ADMIN_USER = 'Kadir';
-const ADMIN_PASS = 'ZÜLEYHA34063';
-
-function hashPass(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return hash.toString(16);
-}
-
-const usersRef = ref(db, 'defter/kullanicilar');
-onValue(usersRef, (snap) => {
-  knownUsers = snap.val() || {};
-  if (isAdmin) renderAdminPanel();
-});
-
-function grantAccess(username) {
-  currentUsername = username;
-  const userEntry = Object.values(knownUsers).find(u => u.username === username);
-  isAdmin = (username === ADMIN_USER) || !!(userEntry && userEntry.isAdmin);
-  userDataRef = ref(db, `defter/userData/${username}`);
-
-  state = { people: [], transactions: [], depolar: {} };
-  currentTab = 'hepsi';
-  isListening = false;
-
-  const token = hashPass(username + ':' + ADMIN_PASS);
-  sessionStorage.setItem('defter_auth', JSON.stringify({ u: username, t: token }));
-
-  const adminTab = document.getElementById('adminNavTab');
-  if (adminTab) adminTab.style.display = isAdmin ? 'flex' : 'none';
-
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('loginPanel').style.display = 'block';
-  document.getElementById('changePassPanel').style.display = 'none';
-  document.getElementById('appContent').classList.add('visible');
-  document.getElementById('loginError').textContent = '';
-  startListening();
-}
-
 window.doLogin = function() {
-  const userRaw = document.getElementById('loginUser').value.trim();
-  const user = userRaw.toLowerCase();
+  const user = document.getElementById('loginUser').value.trim();
   const pass = document.getElementById('loginPass').value;
-  const err = document.getElementById('loginError');
-
-  if (!userRaw || !pass) { err.textContent = '❌ Kullanıcı adı ve şifre boş olamaz.'; return; }
-
-  if (user === ADMIN_USER.toLowerCase() && pass === ADMIN_PASS) {
-    grantAccess(ADMIN_USER);
-    return;
-  }
-
-  const entry = Object.entries(knownUsers).find(([k, u]) =>
-    u.username && u.username.toLowerCase() === user && u.passHash === hashPass(pass)
-  );
-
-  if (entry) {
-    const [key, userData] = entry;
-    grantAccess(userData.username);
-  } else {
-    err.textContent = '❌ Kullanıcı adı veya şifre hatalı.';
-    document.getElementById('loginPass').value = '';
-  }
+  
+  if (!user || !pass) { alert('Kullanıcı adı ve şifre girin'); return; }
+  
+  const userRef = ref(db, 'users/' + user);
+  onValue(userRef, (snapshot) => {
+    const userData = snapshot.val();
+    if (!userData) {
+      document.getElementById('loginError').textContent = 'Kullanıcı bulunamadı';
+      return;
+    }
+    
+    const storedPass = atob(userData.password || '');
+    if (storedPass !== pass) {
+      document.getElementById('loginError').textContent = 'Şifre yanlış';
+      return;
+    }
+    
+    if (userData.forceChangePass) {
+      currentUsername = user;
+      document.getElementById('loginPanel').style.display = 'none';
+      document.getElementById('changePassPanel').style.display = 'block';
+      return;
+    }
+    
+    login(user, userData.isAdmin);
+  }, { onlyOnce: true });
 }
 
 window.doChangePass = function() {
   const p1 = document.getElementById('newPass1').value;
   const p2 = document.getElementById('newPass2').value;
-  const err = document.getElementById('changePassError');
+  
+  if (!p1 || p1.length < 6 || p1 !== p2) {
+    document.getElementById('changePassError').textContent = 'Şifreler eşleşmeli ve ≥6 char';
+    return;
+  }
+  
+  const userRef = ref(db, 'users/' + currentUsername);
+  update(userRef, {
+    password: btoa(p1),
+    forceChangePass: false
+  }).then(() => {
+    login(currentUsername, false);
+  }).catch(e => {
+    document.getElementById('changePassError').textContent = 'Hata: ' + e.message;
+  });
+}
 
-  if (!p1 || p1.length < 6) { err.textContent = '❌ Şifre en az 6 karakter olmalı.'; return; }
-  if (p1 !== p2) { err.textContent = '❌ Şifreler eşleşmiyor.'; return; }
-  grantAccess(currentUsername);
+function login(username, admin) {
+  currentUsername = username;
+  isAdmin = admin;
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('appContent').classList.add('visible');
+  
+  userDataRef = ref(db, 'users/' + username + '/data');
+  startListening();
+  
+  if (admin) {
+    document.getElementById('adminNavTab').style.display = 'block';
+  }
 }
 
 window.doLogout = function() {
-  if (!confirm('Çıkış yapmak istediğinize emin misiniz?')) return;
-  sessionStorage.removeItem('defter_auth');
+  if (!confirm('Çıkış yapılsın mı?')) return;
   currentUsername = null;
   isAdmin = false;
-  userDataRef = null;
   isListening = false;
-  state = { people: [], transactions: [], depolar: {} };
   document.getElementById('loginScreen').classList.remove('hidden');
   document.getElementById('appContent').classList.remove('visible');
+  document.getElementById('loginPanel').style.display = 'block';
+  document.getElementById('changePassPanel').style.display = 'none';
   document.getElementById('loginUser').value = '';
   document.getElementById('loginPass').value = '';
-  const adminTab = document.getElementById('adminNavTab');
-  if (adminTab) adminTab.style.display = 'none';
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('changePassError').textContent = '';
+  document.getElementById('adminNavTab').style.display = 'none';
 }
 
-function checkAuth() {
-  const stored = sessionStorage.getItem('defter_auth');
-  if (stored) {
-    try {
-      const auth = JSON.parse(stored);
-      if (auth.u && auth.t === hashPass(auth.u + ':' + ADMIN_PASS)) {
-        grantAccess(auth.u);
-        return;
-      }
-    } catch(e) {}
-  }
-  document.getElementById('loginUser').focus();
-}
-
-window.openAddUser = function() {
-  document.getElementById('auAd').value = '';
-  document.getElementById('auUsername').value = '';
-  document.getElementById('auPass').value = '';
-  document.getElementById('auError').textContent = '';
-  openModal('addUserModal');
-}
-
-window.saveAddUser = function() {
-  const ad = document.getElementById('auAd').value.trim();
-  const username = document.getElementById('auUsername').value.trim().toLowerCase().replace(/\s+/g,'');
-  const tempPass = document.getElementById('auPass').value.trim();
-  const err = document.getElementById('auError');
-
-  if (!ad || !username || !tempPass) { err.textContent = '❌ Tüm alanları doldurun.'; return; }
-  if (username.length < 3) { err.textContent = '❌ Kullanıcı adı en az 3 karakter olmalı.'; return; }
-  if (username === ADMIN_USER.toLowerCase()) { err.textContent = '❌ Bu kullanıcı adı kullanılamaz.'; return; }
-
-  const exists = Object.values(knownUsers).some(u => u.username && u.username.toLowerCase() === username);
-  if (exists) { err.textContent = '❌ Bu kullanıcı adı zaten alınmış.'; return; }
-
-  err.textContent = '⏳ Oluşturuluyor...';
-  const newKey = uid();
-  const newUser = {
-    username, name: ad,
-    passHash: hashPass(tempPass),
-    mustChangePass: true,
-    createdAt: new Date().toISOString()
-  };
-  set(ref(db, `defter/kullanicilar/${newKey}`), newUser)
-    .then(() => {
-      closeModal('addUserModal');
-      alert(`✅ Kullanıcı oluşturuldu!\n\nKullanıcı Adı: ${username}\nGeçici Şifre: ${tempPass}`);
-    })
-    .catch(e => { err.textContent = '❌ Hata: ' + e.message; });
-}
-
-function renderAdminPanel() {
-  const list = document.getElementById('adminUserList');
-  if (!list) return;
-  const users = Object.entries(knownUsers).filter(([k, u]) => u.username && u.username !== ADMIN_USER);
-  if (!users.length) {
-    list.innerHTML = '<div class="empty"><p>Henüz kullanıcı eklenmedi.</p></div>';
-    return;
-  }
-  list.innerHTML = users.map(([k, u]) => `
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
-    <div>
-      <div style="font-weight:700;">${u.name}</div>
-      <div style="font-size:12px;color:var(--text2);">@${u.username}</div>
-    </div>
-    <button class="btn-add delete" onclick="deleteUser('${k}')">🗑 Sil</button>
-  </div>`).join('');
-}
-
-window.deleteUser = function(key) {
-  const u = knownUsers[key];
-  if (!u) return;
-  if (!confirm(`"${u.name}" adlı kullanıcıyı silmek istediğinize emin misiniz?`)) return;
-  set(ref(db, `defter/kullanicilar/${key}`), null)
-    .then(() => set(ref(db, `defter/userData/${u.username}`), null))
-    .catch(e => alert('Hata: ' + e.message));
-}
-
-// ============================================================
-// INIT
-// ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-  checkAuth();
+// İlk yükleme
+window.addEventListener('load', () => {
+  const today = new Date();
+  document.getElementById('txDate').valueAsDate = today;
+  document.getElementById('txDue').valueAsDate = today;
 });
 
+});
 </script>
 
 </body>
